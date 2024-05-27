@@ -9,12 +9,17 @@ const pool = new Pool({
     port: 5432,
 });
 
-exports.create = async (username, password) => {
-    const result = await pool.query('INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *', [username, password]);
+exports.create = async (username, email, password) => {
+    const result = await pool.query('INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *', [username, email, password]);
     return result.rows[0];
 };
 
-exports.findByUsername = async (username) => {
-    const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+exports.findByUsernameOrEmail = async (username, email) => {
+    const result = await pool.query('SELECT * FROM users WHERE username = $1 OR email = $2', [username, email]);
+    return result.rows[0];
+};
+
+exports.findByIdentifier = async (identifier) => {
+    const result = await pool.query('SELECT * FROM users WHERE username = $1 OR email = $1', [identifier]);
     return result.rows[0];
 };
