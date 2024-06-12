@@ -10,17 +10,9 @@ const pool = new Pool({
 });
 
 // Function to create a new plant
-exports.create = async (name, date_added, image, land_id) => {
-    const query = 'INSERT INTO plants (name, date_added, image, land_id) VALUES ($1, $2, $3, $4) RETURNING *';
-    const values = [name, date_added, image, land_id];
-    const result = await pool.query(query, values);
-    return result.rows[0];
-};
-
-// Function to find a plant by ID
-exports.findById = async (id) => {
-    const query = 'SELECT * FROM plants WHERE id = $1';
-    const values = [id];
+exports.create = async (name, date_added, image, user_id) => {
+    const query = 'INSERT INTO plants (name, date_added, image, user_id) VALUES ($1, $2, $3, $4) RETURNING *';
+    const values = [name, date_added, image, user_id];
     const result = await pool.query(query, values);
     return result.rows[0];
 };
@@ -33,9 +25,9 @@ exports.findAll = async () => {
 };
 
 // Function to update a plant
-exports.update = async (id, name, date_added, image, land_id) => {
-    const query = 'UPDATE plants SET name = $1, date_added = $2, image = $3, land_id = $4 WHERE id = $5 RETURNING *';
-    const values = [name, date_added, image, land_id, id];
+exports.update = async (id, name, date_added, image, user_id) => {
+    const query = 'UPDATE plants SET name = $1, date_added = $2, image = $3, user_id = $4 WHERE id = $5 RETURNING *';
+    const values = [name, date_added, image, user_id, id];
     const result = await pool.query(query, values);
     return result.rows[0];
 };
@@ -47,9 +39,10 @@ exports.delete = async (id) => {
     await pool.query(query, values);
 };
 
-exports.findByLandId = async (land_id) => {
-    const query = 'SELECT * FROM plants WHERE land_id = $1';
-    const values = [land_id];
+// Function to find plants by user_id
+exports.findByUserId = async (user_id) => {
+    const query = 'SELECT * FROM plants WHERE user_id = $1';
+    const values = [user_id];
     const result = await pool.query(query, values);
     return result.rows;
 };

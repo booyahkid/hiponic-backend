@@ -9,8 +9,7 @@ const storage = multer.memoryStorage(); // or use diskStorage if you want to sav
 const upload = multer({ storage });
 
 // Routes with authentication
-router.get('/', authenticateToken, plantController.getPlantsByLand);
-router.get('/:id', authenticateToken, plantController.getPlantById);
+router.get('/', authenticateToken, plantController.getPlantsByUser);
 router.post('/', authenticateToken, upload.single('image'), plantController.addPlant);
 router.put('/:id', authenticateToken, upload.single('image'), plantController.updatePlant);
 router.delete('/:id', authenticateToken, plantController.deletePlant);
