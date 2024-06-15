@@ -82,11 +82,14 @@ exports.logout = async (req, res) => {
 };
 
 exports.changeUsername = async (req, res) => {
-    const { userId, newUsername } = req.body;
+    const { newUsername } = req.body;
 
     try {
-        // Your logic for updating the username
-        // This could involve validating the new username, updating it in the database, etc.
+        // Get userId from the decoded token
+        const userId = req.user.id;
+
+        // Update the username in the database
+        await User.updateUsername(userId, newUsername);
 
         res.json({ error: false, message: 'Username updated successfully' });
     } catch (err) {
@@ -96,16 +99,18 @@ exports.changeUsername = async (req, res) => {
 };
 
 exports.changePassword = async (req, res) => {
-    const { userId, currentPassword, newPassword } = req.body;
+    const { newPassword, currentPassword } = req.body;
 
     try {
-        // Find user by userId
+        // Get userId from the decoded token
+        const userId = req.user.id; // Automatically retrieved from middleware
+
+        // Verify the current password
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ error: true, message: 'User not found' });
         }
 
-        // Validate current password
         const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
         if (!isPasswordValid) {
             return res.status(400).json({ error: true, message: 'Current password is incorrect' });
@@ -114,7 +119,7 @@ exports.changePassword = async (req, res) => {
         // Hash the new password
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-        // Update user's password in the database
+        // Update the password in the database
         await User.updatePassword(userId, hashedPassword);
 
         res.json({ error: false, message: 'Password changed successfully' });

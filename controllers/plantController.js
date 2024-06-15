@@ -134,5 +134,3 @@ exports.getPlantsByUser = async (req, res) => {
         });
     }
 };
-
-
